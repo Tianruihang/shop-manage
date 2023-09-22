@@ -40,6 +40,10 @@ export const getMemberListData = (params) => {
   return getRequest("/passport/member", params);
 };
 
+export const getMemberAuthListData = (params) => {
+  return getRequest("/passport/member/auth/page", params);
+};
+
 //  获取会员详情
 export const getMemberInfoData = (id) => {
   return getRequest(`/passport/member/${id}`);
@@ -92,6 +96,9 @@ export const withdrawApply = (params) => {
 //会员状态修改
 export const updateMemberStatus = (params) => {
   return putRequest("/passport/member/updateMemberStatus", params);
+};
+export const updateAuthStatus = (params) => {
+  return putRequest("/passport/member/auth", params);
 };
 
 // 获取会员注册统计列表

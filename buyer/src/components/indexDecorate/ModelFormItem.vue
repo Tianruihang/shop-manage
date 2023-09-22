@@ -43,7 +43,7 @@
     </template>
     <!-- 限时秒杀 待完善 -->
     <template v-if="element.type == 'seckill' && element.options.list.length">
-      <seckill :data="element" class="mb_20 width_1200_auto"></seckill>
+<!--      <seckill :data="element" class="mb_20 width_1200_auto"></seckill>-->
     </template>
     <!-- 折扣广告 -->
     <template v-if="element.type == 'discountAdvert'">
