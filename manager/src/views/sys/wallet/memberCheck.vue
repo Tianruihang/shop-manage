@@ -43,8 +43,6 @@
 import multipleMap from "@/components/map/multiple-map";
 import * as API_Member from "@/api/member.js";
 import ossManage from "@/views/sys/oss-manage/ossManage";
-import * as RegExp from "@/libs/RegExp.js";
-import {getMemberAuthListData, updateAuthStatus} from "../../../api/member";
 
 export default {
   name: "member",
@@ -97,8 +95,8 @@ export default {
           },
         },
         {
-          title: "身份证号",
-          key: "createTime",
+          title: "充值数量",
+          key: "num",
           width: 180,
           render: (h, params) => {
             return h(
@@ -109,7 +107,7 @@ export default {
           },
         },
         {
-          title: "身份证首页",
+          title: "用户充值截图",
           align: "left",
           width: 100,
           render: (h, params) => {
@@ -134,139 +132,6 @@ export default {
                 ]
             )
 
-          },
-        },
-
-        {
-          title: "身份证反页",
-          align: "left",
-          width: 100,
-          render: (h, params) => {
-            return h(
-                "div", [
-                  h(
-                      "img", {
-                        style: {
-                          // verticalAlign: "middle",
-                          width: "40px",
-                          height: "80px",
-                        },
-                        attrs: {
-                          src: params.row.backImg
-                        },
-                        on: {
-                          click: () => {
-                            this.imgDetail(params.row.backImg);
-                          }
-                        }
-                      })
-                ]
-            )
-          },
-        },
-        {
-          title: "手持身份证",
-          align: "left",
-          width: 100,
-          render: (h, params) => {
-            return h(
-                "div", [
-                  h(
-                      "img", {
-                        style: {
-                          // verticalAlign: "middle",
-                          width: "40px",
-                          height: "80px",
-                        },
-                        attrs: {
-                          src: params.row.authImg
-                        },
-                        on: {
-                          click: () => {
-                            this.imgDetail(params.row.authImg);
-                          }
-                        }
-                      })
-                ]
-            )
-          },
-        },
-        {
-          title: "分享人",
-          key: "inviteName",
-          width: 180,
-          render: (h, params) => {
-            return h(
-              "div",
-              {},
-              params.row.inviteName == void 0 ? "0" : params.row.inviteName
-            );
-          },
-        },
-        {
-          title: "分享人手机号",
-          key: "inviteMobile",
-          width: 180,
-          render: (h, params) => {
-            return h(
-              "div",
-              {},
-              params.row.inviteMobile == void 0 ? "0" : params.row.inviteMobile
-            );
-          },
-        },
-        {
-          title: "支付宝页面",
-          align: "left",
-          width: 100,
-          render: (h, params) => {
-            return h(
-                "div", [
-                  h(
-                      "img", {
-                        style: {
-                          // verticalAlign: "middle",
-                          width: "40px",
-                          height: "80px",
-                        },
-                        attrs: {
-                          src: params.row.zfbImg
-                        },
-                        on: {
-                          click: () => {
-                            this.imgDetail(params.row.zfbImg);
-                          }
-                        }
-                      })
-                ]
-            )
-          },
-        },
-        {
-          title: "微信页面",
-          align: "left",
-          width: 100,
-          render: (h, params) => {
-            return h(
-                "div", [
-                  h(
-                      "img", {
-                        style: {
-                          // verticalAlign: "middle",
-                          width: "40px",
-                          height: "80px",
-                        },
-                        attrs: {
-                          src: params.row.weChatImg
-                        },
-                        on: {
-                          click: () => {
-                            this.imgDetail(params.row.weChatImg);
-                          }
-                        }
-                      })
-                ]
-            )
           },
         },
         {
@@ -438,9 +303,9 @@ export default {
       });
     },
 
-    //查询会员审核列表
+    //查询会员积分审核列表
     getData() {
-      API_Member.getMemberAuthListData(this.searchForm).then((res) => {
+      API_Member.getMemberPointListData(this.searchForm).then((res) => {
         if (res.result.records) {
           this.loading = false;
           this.init(res.result.records);
@@ -499,7 +364,7 @@ export default {
         title: "提示",
         content: "<p>审核此会员？</p>",
         onOk: () => {
-          API_Member.updateAuthStatus(params).then((res) => {
+          API_Member.updateMemberPoint(params).then((res) => {
             if (res.success) {
               this.$Message.success("审核成功");
               this.getData();

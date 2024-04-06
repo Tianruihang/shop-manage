@@ -43,6 +43,10 @@ export const getMemberListData = (params) => {
 export const getMemberAuthListData = (params) => {
   return getRequest("/passport/member/auth/page", params);
 };
+//用户积分列表
+export const getMemberPointListData = (params) => {
+  return getRequest("/user/rechage/list", params);
+};
 
 //  获取会员详情
 export const getMemberInfoData = (id) => {
@@ -99,6 +103,10 @@ export const updateMemberStatus = (params) => {
 };
 export const updateAuthStatus = (params) => {
   return putRequest("/passport/member/auth", params);
+};
+//更新用户积分
+export const updateMemberPoint = (params) => {
+  return putRequest("/user/rechage/audit", params);
 };
 
 // 获取会员注册统计列表
