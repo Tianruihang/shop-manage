@@ -75,11 +75,13 @@ export default {
         {
           title: "会员名称",
           key: "username",
+          idth: 130,
           tooltip: true,
         },
         {
           title: "会员昵称",
           key: "nickName",
+          idth: 130,
           tooltip: true,
         },
         {
@@ -102,7 +104,7 @@ export default {
             return h(
                 "div",
                 {},
-                params.row.idCardNum == void 0 ? "0" : params.row.idCardNum
+                params.row.num == void 0 ? "0" : params.row.num
             );
           },
         },
@@ -121,11 +123,11 @@ export default {
                           height: "80px",
                         },
                         attrs: {
-                          src: params.row.onImg
+                          src: params.row.fileImg
                         },
                         on: {
                           click: () => {
-                            this.imgDetail(params.row.onImg);
+                            this.imgDetail(params.row.fileImg);
                           }
                         }
                       })
@@ -357,7 +359,9 @@ export default {
     //审核通过
     accessAuth(v, k) {
       let params = {
-        id: v.pointId,
+        id: v.id,
+        userId: v.userId,
+        num: v.num,
         status: k,
       };
       this.$Modal.confirm({
