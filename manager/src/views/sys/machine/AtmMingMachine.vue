@@ -1,29 +1,30 @@
 <template>
   <div class="search">
     <Card>
-      <Row>
+      <Row @keydown.enter.native="handleSearch">
         <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
-
-          <Form-item label="收款码相片" prop="collectImg">
-            <img :src="searchForm.collectImg" width="160" height="100">
-            <!-- 上传 -->
-            <div class="tpl">
-              <Upload :on-success="handleUpload" name="file" style="width:50%; height:400px;" accept="image/jpeg,image/jpg,image/png"
-                      multiple type="jpg | jpeg | png" :action="action" :headers="accessToken" width="160" height="100">
-                <div style="padding: 50px 0">
-                  <Icon type="ios-cloud-upload" size="10" style="color: #3399ff"></Icon>
-                  <h2>选择或拖拽文件上传</h2>
-                </div>
-              </Upload>
-            </div>
-          </Form-item>
-
-          <Form-item label="收款方地址" prop="collectUrl">
-            <Input type="text" v-model="searchForm.collectUrl" placeholder="请输入收款方地址" clearable
+          <Form-item label="矿机名称" prop="name">
+            <Input type="text" v-model="searchForm.name" placeholder="请输入矿机名" clearable
                    style="width: 200px"/>
           </Form-item>
-          <Form-item label="收款方名称" prop="collectName">
-            <Input type="text" v-model="searchForm.collectName" placeholder="请输入收款方名称" clearable
+          <Form-item label="矿机价格" prop="price">
+            <Input type="text" v-model="searchForm.price" placeholder="请输入矿机价格" clearable
+                   style="width: 200px"/>
+          </Form-item>
+          <Form-item label="限制购买数量" prop="limitNum">
+            <Input type="text" v-model="searchForm.limitNum" placeholder="请输入限制购买数量" clearable
+                   style="width: 200px"/>
+          </Form-item>
+          <Form-item label="矿机有效时长" prop="limitHours">
+            <Input type="text" v-model="searchForm.limitHours" placeholder="请输入矿机有效时长" clearable
+                   style="width: 200px"/>
+          </Form-item>
+          <Form-item label="每小时产出" prop="hourPoints">
+            <Input type="text" v-model="searchForm.hourPoints" placeholder="请输入每小时产出" clearable
+                   style="width: 200px"/>
+          </Form-item>
+          <Form-item label="算力" prop="power">
+            <Input type="text" v-model="searchForm.power" placeholder="请输入算力" clearable
                    style="width: 200px"/>
           </Form-item>
           <!-- 提交 -->
@@ -37,20 +38,18 @@
 </template>
 <script>
 import multipleMap from "@/components/map/multiple-map";
-import * as API_Rule from "@/api/exchangeRule.js";
+import * as API_Rule from "@/api/atmMingMachine.js";
 import ossManage from "@/views/sys/oss-manage/ossManage";
-import {uploadFile} from "@/api/index";
+import {getAtmMingMachineInfo, insertAtmMingMachine, updateAtmMingMachine} from "../../../api/atmMingMachine";
+
 export default {
-  name: "CollectionConfig",
+  name: "TrendChart",
   components: {
     multipleMap,
     ossManage,
   },
   data() {
     return {
-      file: "",
-      action: uploadFile, // 上传接口
-      accessToken: {}, // 验证token
       defaultPic: require('@/assets/default.png'),
       descTitle: "", // modal标题
       descFlag: false, //编辑查看框
@@ -66,8 +65,9 @@ export default {
         mobile: "",
         disabled: "OPEN",
         id: "",
-        collectImg:"",
-        type:"",
+      },
+      sendForm: {
+        id: "",
       },
       previewImage: "",
       picModelFlag: false, // 选择图片
@@ -132,6 +132,7 @@ export default {
 
     // 初始化信息
     init(data) {
+      this.searchForm.id = this.$route.query.id;
       data.forEach((item) => {
         if (this.selectMember.length != 0) {
           this.selectMember.forEach((member) => {
@@ -148,7 +149,7 @@ export default {
 
     //查询规则列表
     getData() {
-      API_Rule.getLastExchangeRule().then((res) => {
+      API_Rule.getAtmMingMachineInfo(this.searchForm.id).then((res) => {
         this.searchForm = res.result;
         if (res.result.records) {
           this.loading = false;
@@ -157,28 +158,61 @@ export default {
         }
       });
     },
-    // 上传数据
-    handleUpload(file) {
-      this.upload(file);
-      return false;
+    orderStatusList2 (val) {
+      let orderStatusList = {
+        1: "平价区交易",
+        2: "溢价区交易",
+      };
+      return orderStatusList[val];
     },
-    /**
-     * 上传文件
-     */
-    async upload(res) {
-      if (res.success) {
-        this.searchForm.collectImg = res.result;
-      }
+    // 根据订单状态查询订单码
+    orderStatusList3 (val) {
+      let orderStatusList = {
+        "已创建": 0,
+        "已完成": 1,
+        "已取消": 2,
+        "待付款": 3,
+      };
+      return orderStatusList[val];
     },
     //添加会员提交
+    insertRuleSubmit() {
+      this.$refs.searchForm.validate((valid) => {
+        if (valid) {
+          this.searchForm.name = this.searchForm.name;
+          this.searchForm.price = parseFloat(this.searchForm.price);
+          this.searchForm.limitHours = this.searchForm.limitHours;
+          this.searchForm.limitNum = this.searchForm.limitNum;
+          this.searchForm.hourPoints = parseFloat(this.searchForm.hourPoints);
+          this.searchForm.sumPoints = parseFloat(this.searchForm.sumPoints);
+          this.searchForm.power = this.searchForm.power;
+          API_Rule.insertAtmMingMachine(this.searchForm).then((res) => {
+            if (res.result) {
+              this.$Message.success("新增成功！");
+              //返回上一页
+              this.$router.go(-1);
+            }
+          });
+        }
+      });
+    },
     updateRuleSubmit() {
       this.$refs.searchForm.validate((valid) => {
         if (valid) {
-          console.log(this.searchForm);
-          API_Rule.updateExchangeRule(this.searchForm).then((res) => {
+          this.sendForm.id = this.searchForm.id;
+          this.sendForm.name = this.searchForm.name;
+          this.sendForm.price = parseFloat(this.searchForm.price);
+          this.sendForm.limitHours = this.searchForm.limitHours;
+          this.sendForm.limitNum = this.searchForm.limitNum;
+          this.sendForm.hourPoints = parseFloat(this.searchForm.hourPoints);
+          this.sendForm.sumPoints = parseFloat(this.searchForm.sumPoints);
+          this.sendForm.power = this.searchForm.power;
+
+          API_Rule.updateAtmMingMachine(this.sendForm).then((res) => {
             if (res.result) {
-              this.getData();
               this.$Message.success("修改成功！");
+              //返回上一页
+              this.$router.go(-1);
             }
           });
         }
@@ -187,7 +221,6 @@ export default {
   },
   mounted() {
     this.getData();
-    this.accessToken.accessToken = "admin";
   },
 };
 </script>

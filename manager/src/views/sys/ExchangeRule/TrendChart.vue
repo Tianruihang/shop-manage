@@ -58,8 +58,10 @@
                    style="width: 200px"/>
           </Form-item>
           <Form-item label="交易类型" prop="mobile">
-            <Input type="text" v-model="searchForm.typeName" placeholder="请输入交易类型" clearable
-                   style="width: 200px"/>
+            <select v-model="searchForm.type" style="width: 200px">
+              <option value="1" >平价区交易</option>
+              <option value="2">溢价区交易</option>
+            </select>
           </Form-item>
           <!-- 提交 -->
           <Form-item>
@@ -180,7 +182,6 @@ export default {
     getData() {
       API_Rule.getLastExchangeRule().then((res) => {
         this.searchForm = res.result;
-        this.searchForm.typeName = this.orderStatusList2(this.searchForm.type);
         if (res.result.records) {
           this.loading = false;
           this.init(res.result.records);
@@ -221,7 +222,6 @@ export default {
           this.searchForm.payRebate = parseFloat(this.searchForm.payRebate);
           this.searchForm.cashRebate = parseFloat(this.searchForm.cashRebate);
           this.searchForm.rebate = parseFloat(this.searchForm.rebate);
-          this.searchForm.type = this.orderStatusList3(this.searchForm.typeName);
 
           API_Rule.updateExchangeRule(this.searchForm).then((res) => {
             if (res.result) {

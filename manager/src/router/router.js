@@ -276,6 +276,12 @@ export const otherRouter = {
       title: "查看直播",
       name: "live-detail",
       component: () => import("@/views/promotions/live/live-detail.vue")
+    },
+    {
+      path: "atmMingMachine",
+      title: "矿机详情页",
+      name: "atmMingMachine",
+      component: () => import("@/views/sys/machine/AtmMingMachine.vue"),
     }
   ]
 };

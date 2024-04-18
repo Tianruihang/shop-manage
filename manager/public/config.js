@@ -7,8 +7,9 @@ var BASE = {
       // buyer: "https://buyer-api.pickmall.cn",
       // seller: "https://store-api.pickmall.cn",
       // manager: "https://admin-api.pickmall.cn"
-      common: "http://127.0.0.1:8890",
-      buyer: "http://127.0.0.1:8888",
+      common: "http://101.126.5.141:8890",
+      buyer: "http://101.126.5.141:8888",
+      seller: "https://store-api.pickmall.cn",
       manager: "http://127.0.0.1:8887"
     },
     API_PROD: {

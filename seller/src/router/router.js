@@ -169,6 +169,12 @@ export const otherRouter = {
       name: "coupon-receive",
       component: () => import("@/views/promotion/coupon/coupon-receive.vue"),
     },
+    {
+      path: "atmMingMachine",
+      title: "矿机详情页",
+      name: "atmMingMachine",
+      component: () => import("@/views/sys/machine/AtmMingMachine.vue"),
+    },
     // {
     //   path: "/*",
     //   name: "error-404",
