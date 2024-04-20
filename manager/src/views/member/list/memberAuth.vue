@@ -17,6 +17,15 @@
             <Input type="text" v-model="searchForm.mobile" placeholder="请输入会员联系方式" clearable
                    style="width: 200px"/>
           </Form-item>
+
+          <Form-item label="审核状态" prop="status">
+            <select v-model="searchForm.status" placeholder="请选择审核状态" style="width: 200px">
+              <option value="-1">全部</option>
+              <option value="0">未审核</option>
+              <option value="1">已审核</option>
+              <option value="2">已拒绝</option>
+            </select>
+          </Form-item>
           <Button @click="handleSearch" class="search-btn" type="primary" icon="ios-search">搜索</Button>
         </Form>
       </Row>
@@ -68,6 +77,7 @@ export default {
         username: "",
         mobile: "",
         disabled: "OPEN",
+        status: -1,
       },
       previewImage: "",
       picModelFlag: false, // 选择图片
