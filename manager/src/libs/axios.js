@@ -1,9 +1,9 @@
 import axios from "axios";
-import { getStore, setStore } from "./storage.js";
-import { router } from "../router/index";
-import { Message } from "view-design";
+import {getStore, setStore} from "./storage.js";
+import {router} from "../router/index";
+import {Message} from "view-design";
 import Cookies from "js-cookie";
-import { handleRefreshToken } from "../api/index";
+import {handleRefreshToken} from "../api/index";
 import {v4 as uuidv4} from 'uuid';
 
 // 统一请求路径前缀
@@ -15,6 +15,14 @@ export const managerUrl =
   (process.env.NODE_ENV === "development"
     ? BASE.API_DEV.manager
     : BASE.API_PROD.manager) + BASE.PREFIX;
+export const sellerUrl =
+  process.env.NODE_ENV === "development"
+    ? BASE.API_DEV.seller
+    : BASE.API_PROD.seller;
+export const imUrl =
+  process.env.NODE_ENV === "development"
+    ? BASE.API_DEV.im
+    : BASE.API_PROD.im;
 // 文件上传接口
 export const uploadFile = commonUrl + "/common/common/upload/file";
 
@@ -22,6 +30,10 @@ export const uploadFile = commonUrl + "/common/common/upload/file";
 const service = axios.create({
   timeout: 30000,
   baseURL: managerUrl
+});
+const sellerService = axios.create({
+  timeout: 30000,
+  baseURL: sellerUrl
 });
 var isRefreshToken = 0;
 const refreshToken = getTokenDebounce();
@@ -292,6 +304,18 @@ export const deleteRequest = (url, params) => {
     params: params,
     headers: {
       accessToken: accessToken
+    }
+  });
+};
+
+export const sellerPostRequest = (url, params) => {
+  let accessToken = getStore("accessToken");
+  return sellerService({
+    method: "post",
+    url: `${url}`,
+    params,
+    headers: {
+      uuid: '123'
     }
   });
 };

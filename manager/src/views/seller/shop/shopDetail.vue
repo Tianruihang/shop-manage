@@ -560,6 +560,9 @@
           </div>
         </TabPane>
       </Tabs>
+      <div class="head-title">
+      <button @click="chatWithStore" class="chat-btn">店铺内聊天</button>
+      </div>
     </Card>
 
   </div>
@@ -567,14 +570,14 @@
 
 <script>
 
-  import ossManage from "@/views/sys/oss-manage/ossManage";
-  import * as RegExp from '@/libs/RegExp.js';
-  import {getCategoryTree} from "@/api/goods";
-  import * as API_Store from "@/api/shops.js";
-  import * as API_Order from "@/api/order.js";
+import ossManage from "@/views/sys/oss-manage/ossManage";
+import {getCategoryTree} from "@/api/goods";
+import * as API_Store from "@/api/shops.js";
+import * as API_Order from "@/api/order.js";
+// 引入imUrl
+import {imUrl} from "@/libs/axios.js";
 
-
-  export default {
+export default {
     name: "member",
     components: {
 
@@ -588,7 +591,11 @@
         storeInfo: {},//店铺信息
         checkAllGroup: [], //选中的经营分类
         selectDate: null, // 申请时间
-
+        loginParams:{
+          uuid: 123,
+          password: 123456,
+          username: ''
+        },
         orderColumns: [
           {
             title: "订单编号",
@@ -865,6 +872,19 @@
         if(v == "refund"){
           this.getRefundOrder();
         }
+      },
+      chatWithStore(){
+        //获取会员token
+        this.loginParams.username = this.storeInfo.memberName;
+        console.log(this.loginParams)
+        API_Store.getShopToken(this.loginParams).then((res) => {
+          console.log(res)
+          if(res.data.success){
+            //跳转新窗口
+            window.open(`${imUrl}`+ "/message?token="+res.data.result.accessToken);
+            console.log(`${imUrl}`)
+          }
+        });
       },
       //查询会员信息
       getStoreInfo() {

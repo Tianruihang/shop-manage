@@ -1,6 +1,6 @@
 // 统一请求路径前缀在libs/axios.js中修改
 import {getRequest, postRequest, putRequest} from '@/libs/axios';
-
+import {sellerPostRequest} from "../libs/axios";
 //查询店铺列表
 export const getBillPage = (params) => {
   return getRequest('/', params)
@@ -22,7 +22,10 @@ export const enableBrand = (id) => {
 export const getShopDetailData = (id, params) => {
     return getRequest(`/store/store/get/detail/${id}`, params)
 }
-
+//获取店铺token
+export const getShopToken = (params) => {
+  return sellerPostRequest(`/store/passport/login/userLogin`, params)
+}
 //增加店铺列表
 export const shopAdd = (params) => {
     return postRequest(`/store/store/add`, params)
